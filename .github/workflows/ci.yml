@@ -47,3 +47,10 @@ jobs:
 
       - name: Build Android APK (Production demo)
         run: flutter build apk --debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-production-debug
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: warn
