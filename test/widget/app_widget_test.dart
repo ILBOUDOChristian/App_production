@@ -1,12 +1,24 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app_production/l10n/app_localizations.dart';
 import 'package:app_production/models/product.dart';
 import 'package:app_production/widgets/product_card.dart';
 import 'package:app_production/screens/catalog_screen.dart';
 import 'package:app_production/screens/cart_screen.dart';
 import 'package:app_production/screens/favorites_screen.dart';
 import 'package:app_production/screens/settings_screen.dart';
+
+Widget createTestApp(Widget child) {
+  return ProviderScope(
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('fr'),
+      home: Scaffold(body: child),
+    ),
+  );
+}
 
 void main() {
   const testProduct = Product(
@@ -21,15 +33,8 @@ void main() {
   );
 
   testWidgets('Widget Test 1: ProductCard affiche les infos et les semantics', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: Scaffold(
-            body: ProductCard(product: testProduct),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createTestApp(const ProductCard(product: testProduct)));
+    await tester.pumpAndSettle();
 
     expect(find.text('Produit Widget Test'), findsOneWidget);
     expect(find.text('99.00 €'), findsOneWidget);
@@ -38,13 +43,8 @@ void main() {
   });
 
   testWidgets('Widget Test 2: CatalogScreen affiche la barre de recherche et les filtres', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: CatalogScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createTestApp(const CatalogScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.text('Catalogue Produits'), findsOneWidget);
     expect(find.text('Rechercher un produit...'), findsOneWidget);
@@ -53,13 +53,8 @@ void main() {
   });
 
   testWidgets('Widget Test 3: CartScreen affiche letat vide par defaut', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: CartScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createTestApp(const CartScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.text('Mon Panier'), findsOneWidget);
     expect(find.text('Votre panier est vide'), findsOneWidget);
@@ -67,13 +62,8 @@ void main() {
   });
 
   testWidgets('Widget Test 4: FavoritesScreen affiche le message vide', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: FavoritesScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createTestApp(const FavoritesScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.text('Mes Favoris'), findsOneWidget);
     expect(find.text('Aucun favori pour le moment'), findsOneWidget);
@@ -81,13 +71,8 @@ void main() {
   });
 
   testWidgets('Widget Test 5: SettingsScreen affiche le switch sombre et le selecteur de langue', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: SettingsScreen(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(createTestApp(const SettingsScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.text('Paramètres'), findsOneWidget);
     expect(find.text('Mode Sombre'), findsOneWidget);

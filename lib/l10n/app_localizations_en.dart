@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Production App';
+  String get appTitle => 'App Production-Ready';
 
   @override
   String get catalogTitle => 'Product Catalog';
@@ -42,6 +42,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkoutButton => 'Proceed to Checkout';
 
   @override
+  String get orderConfirmed => 'Order placed successfully!';
+
+  @override
   String get favoritesTitle => 'My Favorites';
 
   @override
@@ -60,7 +63,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToCart => 'Add to Cart';
 
   @override
-  String get addedToCart => 'Product added to cart!';
+  String get addedToCart => 'added to cart!';
 
   @override
   String get productDetails => 'Product Details';
@@ -70,4 +73,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get priceLabel => 'Price';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get currency => '€';
+
+  @override
+  String get noProductsFound => 'No products found';
+
+  @override
+  String get enabled => 'Enabled';
+
+  @override
+  String get disabled => 'Disabled';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get add => 'Add';
 }

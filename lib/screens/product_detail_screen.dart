@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../l10n/app_localizations.dart';
 import '../models/product.dart';
 import '../providers/app_providers.dart';
 
@@ -10,15 +12,17 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFav = ref.watch(favoritesProvider.notifier).isFavorite(product.id);
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final isFav = ref.watch(favoritesProvider.notifier).isFavorite(product.id);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name),
+        title: Text(l10n?.productDetails ?? 'Détails du produit'),
         actions: [
           Semantics(
             label: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
+            button: true,
             child: IconButton(
               icon: Icon(
                 isFav ? Icons.favorite : Icons.favorite_border,
@@ -35,7 +39,7 @@ class ProductDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image optimisée
+            // Image optimisée avec lazy loading
             AspectRatio(
               aspectRatio: 1.2,
               child: Image.network(
@@ -43,8 +47,15 @@ class ProductDetailScreen extends ConsumerWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: theme.colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.broken_image, size: 64),
+                  child: const Center(child: Icon(Icons.broken_image, size: 64)),
                 ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                },
               ),
             ),
             Padding(
@@ -56,22 +67,15 @@ class ProductDetailScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${product.price.toStringAsFixed(2)} €',
+                        '${product.price.toStringAsFixed(2)} ${l10n?.currency ?? "€"}',
                         style: theme.textTheme.headlineMedium?.copyWith(
-                          color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'En stock (${product.stock})',
-                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                        ),
+                      Chip(
+                        avatar: const Icon(Icons.check_circle, size: 16, color: Colors.green),
+                        label: Text('${product.stock} ${l10n?.stockLabel ?? "En stock"}'),
                       ),
                     ],
                   ),
@@ -93,7 +97,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
                   const Divider(height: 32),
                   Text(
-                    'Description',
+                    l10n?.descriptionLabel ?? 'Description',
                     style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
@@ -114,7 +118,7 @@ class ProductDetailScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Semantics(
-            label: 'Bouton Ajouter au panier',
+            label: l10n?.addToCart ?? 'Ajouter au panier',
             button: true,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
@@ -122,12 +126,15 @@ class ProductDetailScreen extends ConsumerWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
               icon: const Icon(Icons.shopping_cart_checkout),
-              label: const Text('Ajouter au panier', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              label: Text(
+                l10n?.addToCart ?? 'Ajouter au panier',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               onPressed: () {
                 ref.read(cartProvider.notifier).addItem(product);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('${product.name} ajouté au panier !'),
+                    content: Text('${product.name} ${l10n?.addedToCart ?? "ajouté au panier !"}'),
                     duration: const Duration(seconds: 2),
                     behavior: SnackBarBehavior.floating,
                   ),

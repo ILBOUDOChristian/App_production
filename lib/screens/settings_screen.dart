@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -7,21 +9,25 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
     final isDark = themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Paramètres', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n?.settingsTitle ?? 'Paramètres',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: ListView(
         children: [
           Semantics(
-            label: 'Interrupteur pour activer ou désactiver le mode sombre',
+            label: 'Interrupteur du mode sombre, actuellement ${isDark ? l10n?.enabled ?? "Activé" : l10n?.disabled ?? "Désactivé"}',
             child: SwitchListTile(
-              title: const Text('Mode Sombre'),
-              subtitle: Text(isDark ? 'Activé' : 'Désactivé'),
+              title: Text(l10n?.themeLabel ?? 'Mode Sombre'),
+              subtitle: Text(isDark ? (l10n?.enabled ?? 'Activé') : (l10n?.disabled ?? 'Désactivé')),
               secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
               value: isDark,
               onChanged: (val) {
@@ -30,22 +36,25 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          ListTile(
-            title: const Text('Langue'),
-            subtitle: Text(locale.languageCode == 'fr' ? 'Français' : 'English'),
-            leading: const Icon(Icons.language),
-            trailing: DropdownButton<String>(
-              value: locale.languageCode,
-              underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: 'fr', child: Text('Français (FR)')),
-                DropdownMenuItem(value: 'en', child: Text('English (EN)')),
-              ],
-              onChanged: (code) {
-                if (code != null) {
-                  ref.read(localeProvider.notifier).setLocale(code);
-                }
-              },
+          Semantics(
+            label: 'Sélecteur de langue',
+            child: ListTile(
+              title: Text(l10n?.languageLabel ?? 'Langue'),
+              subtitle: Text(locale.languageCode == 'fr' ? 'Français' : 'English'),
+              leading: const Icon(Icons.language),
+              trailing: DropdownButton<String>(
+                value: locale.languageCode,
+                underline: const SizedBox(),
+                items: const [
+                  DropdownMenuItem(value: 'fr', child: Text('Français (FR)')),
+                  DropdownMenuItem(value: 'en', child: Text('English (EN)')),
+                ],
+                onChanged: (code) {
+                  if (code != null) {
+                    ref.read(localeProvider.notifier).setLocale(code);
+                  }
+                },
+              ),
             ),
           ),
           const Divider(),

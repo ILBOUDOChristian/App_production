@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 import '../widgets/product_card.dart';
 
@@ -9,33 +10,37 @@ class CatalogScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final products = ref.watch(filteredProductsProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final theme = Theme.of(context);
 
     final categories = [
-      {'id': 'all', 'label': 'Tous'},
-      {'id': 'tech', 'label': 'High-Tech'},
-      {'id': 'fashion', 'label': 'Mode'},
-      {'id': 'home', 'label': 'Maison'},
+      {'id': 'all', 'label': l10n?.filterAll ?? 'Tous'},
+      {'id': 'tech', 'label': l10n?.filterTech ?? 'High-Tech'},
+      {'id': 'fashion', 'label': l10n?.filterFashion ?? 'Mode'},
+      {'id': 'home', 'label': l10n?.filterHome ?? 'Maison'},
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catalogue Produits', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n?.catalogTitle ?? 'Catalogue Produits',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
       ),
       body: Column(
         children: [
-          // Barre de recherche
+          // Barre de recherche avec Semantics
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Semantics(
-              label: 'Champ de recherche de produits',
+              label: l10n?.searchHint ?? 'Rechercher un produit...',
               textField: true,
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Rechercher un produit...',
+                  hintText: l10n?.searchHint ?? 'Rechercher un produit...',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
@@ -62,14 +67,19 @@ class CatalogScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final cat = categories[index];
                 final isSelected = selectedCategory == cat['id'];
-                return ChoiceChip(
-                  label: Text(cat['label']!),
+                return Semantics(
+                  label: 'Filtre ${cat['label']}',
                   selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      ref.read(selectedCategoryProvider.notifier).state = cat['id']!;
-                    }
-                  },
+                  button: true,
+                  child: ChoiceChip(
+                    label: Text(cat['label']!),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      if (selected) {
+                        ref.read(selectedCategoryProvider.notifier).state = cat['id']!;
+                      }
+                    },
+                  ),
                 );
               },
             ),
@@ -79,7 +89,7 @@ class CatalogScreen extends ConsumerWidget {
           // Grille des produits optimisée (60fps avec clé stable)
           Expanded(
             child: products.isEmpty
-                ? const Center(child: Text('Aucun produit trouvé'))
+                ? Center(child: Text(l10n?.noProductsFound ?? 'Aucun produit trouvé'))
                 : GridView.builder(
                     padding: const EdgeInsets.all(16),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Production App'**
+  /// **'App Production-Ready'**
   String get appTitle;
 
   /// No description provided for @catalogTitle.
@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Passer la commande'**
   String get checkoutButton;
 
+  /// No description provided for @orderConfirmed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande validée avec succès !'**
+  String get orderConfirmed;
+
   /// No description provided for @favoritesTitle.
   ///
   /// In fr, this message translates to:
@@ -203,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @addedToCart.
   ///
   /// In fr, this message translates to:
-  /// **'Produit ajouté au panier !'**
+  /// **'ajouté au panier !'**
   String get addedToCart;
 
   /// No description provided for @productDetails.
@@ -223,6 +229,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Prix'**
   String get priceLabel;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description'**
+  String get descriptionLabel;
+
+  /// No description provided for @currency.
+  ///
+  /// In fr, this message translates to:
+  /// **'€'**
+  String get currency;
+
+  /// No description provided for @noProductsFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit trouvé'**
+  String get noProductsFound;
+
+  /// No description provided for @enabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activé'**
+  String get enabled;
+
+  /// No description provided for @disabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivé'**
+  String get disabled;
+
+  /// No description provided for @remove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get remove;
+
+  /// No description provided for @add.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get add;
 }
 
 class _AppLocalizationsDelegate

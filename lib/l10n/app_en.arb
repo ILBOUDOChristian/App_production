@@ -1,6 +1,6 @@
 ﻿{
   "@@locale": "en",
-  "appTitle": "Production App",
+  "appTitle": "App Production-Ready",
   "catalogTitle": "Product Catalog",
   "searchHint": "Search products...",
   "filterAll": "All",
@@ -11,14 +11,22 @@
   "cartEmpty": "Your cart is empty",
   "cartTotal": "Total",
   "checkoutButton": "Proceed to Checkout",
+  "orderConfirmed": "Order placed successfully!",
   "favoritesTitle": "My Favorites",
   "favoritesEmpty": "No favorites yet",
   "settingsTitle": "Settings",
   "languageLabel": "Language",
   "themeLabel": "Dark Mode",
   "addToCart": "Add to Cart",
-  "addedToCart": "Product added to cart!",
+  "addedToCart": "added to cart!",
   "productDetails": "Product Details",
   "stockLabel": "In Stock",
-  "priceLabel": "Price"
+  "priceLabel": "Price",
+  "descriptionLabel": "Description",
+  "currency": "€",
+  "noProductsFound": "No products found",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "remove": "Remove",
+  "add": "Add"
 }

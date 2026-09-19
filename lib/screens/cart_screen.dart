@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 
 class CartScreen extends ConsumerWidget {
@@ -7,20 +9,28 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final cartItems = ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mon Panier', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n?.cartTitle ?? 'Mon Panier',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           if (cartItems.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.delete_outline),
-              onPressed: () {
-                cartNotifier.clearCart();
-              },
+            Semantics(
+              label: 'Vider le panier',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () {
+                  cartNotifier.clearCart();
+                },
+              ),
             ),
         ],
       ),
@@ -31,7 +41,7 @@ class CartScreen extends ConsumerWidget {
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 80, color: theme.colorScheme.outline),
                   const SizedBox(height: 16),
-                  Text('Votre panier est vide', style: theme.textTheme.titleMedium),
+                  Text(l10n?.cartEmpty ?? 'Votre panier est vide', style: theme.textTheme.titleMedium),
                 ],
               ),
             )
@@ -52,25 +62,39 @@ class CartScreen extends ConsumerWidget {
                         width: 56,
                         height: 56,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: 56,
+                          height: 56,
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: const Icon(Icons.broken_image, size: 24),
+                        ),
                       ),
                     ),
                     title: Text(item.product.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    subtitle: Text('${item.product.price.toStringAsFixed(2)} €'),
+                    subtitle: Text('${item.product.price.toStringAsFixed(2)} ${l10n?.currency ?? "€"}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, size: 20),
-                          onPressed: () {
-                            cartNotifier.updateQuantity(item.product.id, item.quantity - 1);
-                          },
+                        Semantics(
+                          label: 'Diminuer la quantité de ${item.product.name}',
+                          button: true,
+                          child: IconButton(
+                            icon: const Icon(Icons.remove_circle_outline, size: 20),
+                            onPressed: () {
+                              cartNotifier.updateQuantity(item.product.id, item.quantity - 1);
+                            },
+                          ),
                         ),
                         Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline, size: 20),
-                          onPressed: () {
-                            cartNotifier.updateQuantity(item.product.id, item.quantity + 1);
-                          },
+                        Semantics(
+                          label: 'Augmenter la quantité de ${item.product.name}',
+                          button: true,
+                          child: IconButton(
+                            icon: const Icon(Icons.add_circle_outline, size: 20),
+                            onPressed: () {
+                              cartNotifier.updateQuantity(item.product.id, item.quantity + 1);
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -99,9 +123,9 @@ class CartScreen extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total', style: theme.textTheme.titleMedium),
+                        Text(l10n?.cartTotal ?? 'Total', style: theme.textTheme.titleMedium),
                         Text(
-                          '${cartNotifier.totalPrice.toStringAsFixed(2)} €',
+                          '${cartNotifier.totalPrice.toStringAsFixed(2)} ${l10n?.currency ?? "€"}',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,
@@ -112,18 +136,27 @@ class CartScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Semantics(
+                        label: l10n?.checkoutButton ?? 'Passer la commande',
+                        button: true,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n?.orderConfirmed ?? 'Commande validée avec succès !'),
+                              ),
+                            );
+                            cartNotifier.clearCart();
+                          },
+                          child: Text(
+                            l10n?.checkoutButton ?? 'Passer la commande',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Commande validée avec succès !')),
-                          );
-                          cartNotifier.clearCart();
-                        },
-                        child: const Text('Passer la commande', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],

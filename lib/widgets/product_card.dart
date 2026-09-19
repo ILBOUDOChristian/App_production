@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../l10n/app_localizations.dart';
 import '../models/product.dart';
 import '../providers/app_providers.dart';
 import '../screens/product_detail_screen.dart';
@@ -11,11 +12,12 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final isFav = ref.watch(favoritesProvider.notifier).isFavorite(product.id);
     final theme = Theme.of(context);
 
     return Semantics(
-      label: 'Carte du produit ${product.name}, prix ${product.price} euros',
+      label: 'Carte du produit ${product.name}, prix ${product.price.toStringAsFixed(2)} ${l10n?.currency ?? "€"}',
       button: true,
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -59,6 +61,7 @@ class ProductCard extends ConsumerWidget {
                       right: 8,
                       child: Semantics(
                         label: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
+                        button: true,
                         child: CircleAvatar(
                           backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.8),
                           child: IconButton(
@@ -92,7 +95,7 @@ class ProductCard extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${product.price.toStringAsFixed(2)} €',
+                          '${product.price.toStringAsFixed(2)} ${l10n?.currency ?? "€"}',
                           style: theme.textTheme.titleSmall?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,

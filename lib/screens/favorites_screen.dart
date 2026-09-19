@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 import '../widgets/product_card.dart';
 
@@ -8,12 +10,16 @@ class FavoritesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final favorites = ref.watch(favoritesProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mes Favoris', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n?.favoritesTitle ?? 'Mes Favoris',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: favorites.isEmpty
           ? Center(
@@ -22,7 +28,10 @@ class FavoritesScreen extends ConsumerWidget {
                 children: [
                   Icon(Icons.favorite_border, size: 80, color: theme.colorScheme.outline),
                   const SizedBox(height: 16),
-                  Text('Aucun favori pour le moment', style: theme.textTheme.titleMedium),
+                  Text(
+                    l10n?.favoritesEmpty ?? 'Aucun favori pour le moment',
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ],
               ),
             )
